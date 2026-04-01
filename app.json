@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.erlivion.MirasHesaplayici"
     },
     "web": {
       "output": "static",
@@ -43,13 +44,19 @@
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-2172632283744022~9031598277",
-          "iosAppId": "ca-app-pub-2172632283744022~9031598277" 
+          "iosAppId": "ca-app-pub-2172632283744022~9031598277"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d67f6b1d-7b17-454b-bcde-831924705d02"
+      }
     }
   }
 }
