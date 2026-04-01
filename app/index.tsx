@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert, Dimensions,
   Modal,
@@ -10,7 +10,16 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { AdEventType, InterstitialAd, TestIds } from 'react-native-google-mobile-ads';
 import { HesaplamaSonucu, SiraciyyeMotoru } from '../logic';
+
+// Geliştirme ortamında test kimliği, canlı ortamda gerçek kimlik kullanılır
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-2172632283744022/5062435235';
+
+// Reklam nesnesini bileşenin dışında oluşturun
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  keywords: ['finance', 'calculator'],
+});
 
 // --- TEMA RENKLERİ ---
 const COLORS = {
@@ -22,7 +31,7 @@ const COLORS = {
   subtext: '#B2BEC3',
   danger: '#FF7675',
   accent: '#0984E3',
-  gold: '#F1C40F' // Başlık ve vurgular için altın rengi
+  gold: '#F1C40F'
 };
 
 // --- EKRAN BOYUTLARI ---
@@ -39,15 +48,15 @@ const INPUT_GROUPS: InputGroup[] = [
   { title: "Kardeşler & Amcalar", items: [{ key: 'erkek_kardes_oz', label: 'Öz Erk. Kar.' }, { key: 'kiz_kardes_oz', label: 'Öz Kız Kar.' }, { key: 'amca', label: 'Amca' }] }
 ];
 
-// --- BİLEŞENLER ---
+// ... (WelcomeScreen ve Counter bileşenleri aynı kalacak) ...
 
 // 1. Karşılama Ekranı Bileşeni
 const WelcomeScreen = ({ onStart }: { onStart: () => void }) => {
   return (
     <SafeAreaView style={styles.welcomeContainer}>
+      {/* ... İçerik aynı ... */}
       <StatusBar barStyle="light-content" backgroundColor={COLORS.bg} />
       
-      {/* Arka Plan Filigranı */}
       <View style={styles.watermarkContainer}>
         <Ionicons name="book" size={width * 0.8} color={COLORS.surface} style={{ opacity: 0.3, transform: [{ rotate: '-15deg' }] }} />
       </View>
@@ -102,6 +111,29 @@ export default function MirasApp() {
   const [inputs, setInputs] = useState<Record<string, number>>({});
   const [result, setResult] = useState<HesaplamaSonucu | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [adLoaded, setAdLoaded] = useState(false);
+
+  useEffect(() => {
+    // Reklam yüklendiğinde tetiklenir
+    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      setAdLoaded(true);
+    });
+
+    // Reklam kapatıldığında tetiklenir
+    const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      setAdLoaded(false);
+      interstitial.load(); // Sonraki işlem için yeni reklam yükle
+      setModalVisible(true); // Reklam kapandıktan sonra sonucu göster
+    });
+
+    // İlk reklamı yüklemeye başla
+    interstitial.load();
+
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeClosed();
+    };
+  }, []);
 
   const updateInput = (key: string, delta: number) => {
     setInputs(prev => {
@@ -118,7 +150,14 @@ export default function MirasApp() {
     const motor = new SiraciyyeMotoru();
     motor.yukle(inputs);
     setResult(motor.hesapla());
-    setModalVisible(true);
+
+    // Reklam hazırsa göster, değilse beklemeden direkt sonucu göster
+    if (adLoaded) {
+      interstitial.show();
+    } else {
+      setModalVisible(true);
+      interstitial.load(); // Eğer yüklenmemişse tekrar denemesi için tetikle
+    }
   };
 
   const handleReset = () => {
@@ -134,14 +173,13 @@ export default function MirasApp() {
     return key;
   };
 
-  // EĞER KARŞILAMA EKRANI İSE
   if (currentScreen === 'welcome') {
     return <WelcomeScreen onStart={() => setCurrentScreen('calculator')} />;
   }
 
-  // HESAP MAKİNESİ EKRANI
   return (
     <SafeAreaView style={styles.container}>
+      {/* ... JSX kodlarının geri kalanı mevcut halinizle tamamen aynı kalacak ... */}
       <StatusBar barStyle="light-content" backgroundColor={COLORS.bg} />
       
       <View style={styles.header}>
@@ -178,6 +216,7 @@ export default function MirasApp() {
       </View>
 
       <Modal animationType="slide" visible={modalVisible} onRequestClose={() => setModalVisible(false)} presentationStyle="pageSheet">
+        {/* ... Modal içeriği mevcut halinizle aynı kalacak ... */}
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Hesaplama Sonucu</Text>
@@ -219,6 +258,7 @@ export default function MirasApp() {
   );
 }
 
+// ... styles objesi de aynı şekilde kalacak ...
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
   
