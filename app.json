@@ -14,7 +14,8 @@
     "android": {
       "versionCode": 2,
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.erlivion.MirasHesaplayici"
     },
     "web": {
       "output": "static",
@@ -45,6 +46,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": false
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d67f6b1d-7b17-454b-bcde-831924705d02"
+      }
     }
   }
 }
