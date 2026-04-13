@@ -21,8 +21,8 @@ mobileAds().setRequestConfiguration({
 });
 
 // --- VERSİYON VE PLAY STORE BİLGİLERİ ---
-const APP_VERSION = '1.0.0'; // Uygulamanın şu anki sürümü
-const PLAY_STORE_URL = 'market://details?id=com.mtahaoztrk.mirashesaplayici'; // Kendi Android Paket Adın (app.json içindeki android.package)
+const APP_VERSION = '1.2.0'; 
+const PLAY_STORE_URL = 'market://details?id=com.erlivion.MirasHesaplayici'; 
 const VERSION_CHECK_URL = 'https://raw.githubusercontent.com/mtahaoztrk/MirasHesaplayici/main/version.json';
 
 const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-2172632283744022/5062435235';
@@ -34,7 +34,8 @@ const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
 const COLORS = {
   bg: '#0F172A', card: '#1E293B', card_dark: '#141E33', primary: '#2DD4BF',
   gold: '#F59E0B', text: '#F1F5F9', subtext: '#94A3B8', border: '#334155',
-  red: '#EF4444', secondary: '#334155', asilMeseleBg: 'rgba(245, 158, 11, 0.15)'
+  red: '#EF4444', secondary: '#334155', asilMeseleBg: 'rgba(245, 158, 11, 0.15)',
+  highlight: '#10B981' // Kişi başı miktar için yeşil vurgu
 };
 
 const PIE_COLORS = ['#2DD4BF', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6', '#EC4899', '#10B981', '#F97316', '#6366F1', '#14B8A6'];
@@ -47,10 +48,10 @@ const HADISLER = [
 
 const getLabel = (key: string) => {
   const labels: Record<string, string> = {
-    'koca': 'Koca', 'kari': 'Karı', 'ogul': 'Oğul', 'kiz': 'Kız', 'ogul_oglu': 'Oğlun Oğlu', 'ogul_kizi': 'Oğlun Kızı', 'ogul_oglunun_oglu': 'O. Oğlunun Oğlu',
+    'koca': 'Koca', 'kari': 'Zevce', 'ogul': 'Oğul', 'kiz': 'Kız', 'ogul_oglu': 'Oğlun Oğlu', 'ogul_kizi': 'Oğlun Kızı', 'ogul_oglunun_oglu': 'Oğlun Oğlunun Oğlu',
     'baba': 'Baba', 'anne': 'Anne', 'dede': 'Dede', 'nine_anne': 'Nine (Anne)', 'nine_baba': 'Nine (Baba)',
-    'erkek_kardes_oz': 'Öz Erk. Kar.', 'kiz_kardes_oz': 'Öz Kız Kar.', 'erkek_kardes_baba': 'Baba Bir Erk. Kar.', 'kiz_kardes_baba': 'Baba Bir Kız Kar.',
-    'kardes_anne': 'Anne Bir Kar.', 'erkek_kardes_oz_oglu': 'Öz Kar. Oğlu', 'erkek_kardes_baba_oglu': 'B.Bir Kar. Oğlu', 'amca': 'Amca', 'amca_oglu': 'Amca Oğlu'
+    'erkek_kardes_oz': 'Öz Erkek Kardeş', 'kiz_kardes_oz': 'Öz Kız Kardeş', 'erkek_kardes_baba': 'Baba Bir Erkek Kardeş', 'kiz_kardes_baba': 'Baba Bir Kız Kardeş',
+    'kardes_anne': 'Anne Bir Kardeş', 'erkek_kardes_oz_oglu': 'Öz Kardeş Oğlu', 'erkek_kardes_baba_oglu': 'Baba Bir Kardeş Oğlu', 'amca': 'Amca', 'amca_oglu': 'Amca Oğlu'
   };
   return labels[key] || key;
 };
@@ -59,10 +60,10 @@ interface InputItem { key: string; label: string; icon: any; iconLib: 'Ion' | 'F
 interface InputGroup { title: string; items: InputItem[] }
 
 const INPUT_GROUPS: InputGroup[] = [
-  { title: "Eşler", items: [{ key: 'koca', label: 'Koca', icon: 'human-male', iconLib: 'MCI' }, { key: 'kari', label: 'Karı', icon: 'human-female', iconLib: 'MCI' }] },
-  { title: "Çocuklar & Torunlar", items: [{ key: 'ogul', label: 'Oğul', icon: 'human-male-height-variant', iconLib: 'MCI' }, { key: 'kiz', label: 'Kız', icon: 'human-female-height-variant', iconLib: 'MCI' }, { key: 'ogul_oglu', label: 'Oğlun Oğlu', icon: 'child', iconLib: 'FA' }, { key: 'ogul_kizi', label: 'Oğlun Kızı', icon: 'child', iconLib: 'FA' }, { key: 'ogul_oglunun_oglu', label: 'O. Oğlunun Oğlu', icon: 'baby', iconLib: 'FA' }] },
-  { title: "Üst Soy (Usûl)", items: [{ key: 'baba', label: 'Baba', icon: 'male', iconLib: 'FA' }, { key: 'anne', label: 'Anne', icon: 'female', iconLib: 'FA' }, { key: 'dede', label: 'Dede', icon: 'account-tie', iconLib: 'MCI' }, { key: 'nine_anne', label: 'Nine (A)', icon: 'account-tie-voice', iconLib: 'MCI' }, { key: 'nine_baba', label: 'Nine (B)', icon: 'account-tie-voice', iconLib: 'MCI' }] },
-  { title: "Kardeşler & Amcalar", items: [{ key: 'erkek_kardes_oz', label: 'Öz Erk.', icon: 'account-multiple', iconLib: 'MCI' }, { key: 'kiz_kardes_oz', label: 'Öz Kız', icon: 'account-multiple-outline', iconLib: 'MCI' }, { key: 'erkek_kardes_baba', label: 'B. Erk.', icon: 'handshake', iconLib: 'FA' }, { key: 'kiz_kardes_baba', label: 'B. Kız', icon: 'handshake', iconLib: 'FA' }, { key: 'kardes_anne', label: 'A. Bir', icon: 'users', iconLib: 'FA' }, { key: 'erkek_kardes_oz_oglu', label: 'Öz Kar. Oğlu', icon: 'user-graduate', iconLib: 'FA' }, { key: 'erkek_kardes_baba_oglu', label: 'B.Bir Kar.Oğlu', icon: 'user-graduate', iconLib: 'FA' }, { key: 'amca', label: 'Amca', icon: 'star-of-david', iconLib: 'MCI' }, { key: 'amca_oglu', label: 'Amca Oğlu', icon: 'user-tie', iconLib: 'FA' }] }
+  { title: "Eşler", items: [{ key: 'koca', label: 'Koca', icon: 'human-male', iconLib: 'MCI' }, { key: 'kari', label: 'Zevce', icon: 'human-female', iconLib: 'MCI' }] },
+  { title: "Çocuklar & Torunlar", items: [{ key: 'ogul', label: 'Oğul', icon: 'human-male-height-variant', iconLib: 'MCI' }, { key: 'kiz', label: 'Kız', icon: 'human-female-height-variant', iconLib: 'MCI' }, { key: 'ogul_oglu', label: 'Oğlun Oğlu', icon: 'child', iconLib: 'FA' }, { key: 'ogul_kizi', label: 'Oğlun Kızı', icon: 'child', iconLib: 'FA' }, { key: 'ogul_oglunun_oglu', label: 'Oğlun Oğlunun Oğlu', icon: 'baby', iconLib: 'FA' }] },
+  { title: "Üst Soy (Usûl)", items: [{ key: 'baba', label: 'Baba', icon: 'male', iconLib: 'FA' }, { key: 'anne', label: 'Anne', icon: 'female', iconLib: 'FA' }, { key: 'dede', label: 'Dede', icon: 'account-tie', iconLib: 'MCI' }, { key: 'nine_anne', label: 'Nine (Anne)', icon: 'account-tie-voice', iconLib: 'MCI' }, { key: 'nine_baba', label: 'Nine (Baba)', icon: 'account-tie-voice', iconLib: 'MCI' }] },
+  { title: "Kardeşler & Amcalar", items: [{ key: 'erkek_kardes_oz', label: 'Öz Erkek Kardeş', icon: 'account-multiple', iconLib: 'MCI' }, { key: 'kiz_kardes_oz', label: 'Öz Kız Kardeş', icon: 'account-multiple-outline', iconLib: 'MCI' }, { key: 'erkek_kardes_baba', label: 'Baba Bir Erkek Kardeş', icon: 'handshake', iconLib: 'FA' }, { key: 'kiz_kardes_baba', label: 'Baba Bir Kız Kardeş', icon: 'handshake', iconLib: 'FA' }, { key: 'kardes_anne', label: 'Anne Bir Kardeş', icon: 'users', iconLib: 'FA' }, { key: 'erkek_kardes_oz_oglu', label: 'Öz Kardeş Oğlu', icon: 'user-graduate', iconLib: 'FA' }, { key: 'erkek_kardes_baba_oglu', label: 'Baba Bir Kardeş Oğlu', icon: 'user-graduate', iconLib: 'FA' }, { key: 'amca', label: 'Amca', icon: 'star-of-david', iconLib: 'MCI' }, { key: 'amca_oglu', label: 'Amca Oğlu', icon: 'user-tie', iconLib: 'FA' }] }
 ];
 
 const renderIcon = (lib: string, name: any, size: number, color: string) => {
@@ -78,9 +79,9 @@ export default function MirasApp() {
   const [modalVisible, setModalVisible] = useState(false);
   const [hadisIndex, setHadisIndex] = useState(0);
   const [adLoaded, setAdLoaded] = useState(false);
+  const [calcCount, setCalcCount] = useState(0); // Hesaplama sayacı
 
   useEffect(() => {
-    // Uygulama açılışında Zorunlu Güncelleme (Force Update) kontrolü
     const checkForUpdates = async () => {
       try {
         const response = await fetch(VERSION_CHECK_URL + '?t=' + new Date().getTime());
@@ -93,11 +94,11 @@ export default function MirasApp() {
             [
               { text: "Şimdi Güncelle", onPress: () => Linking.openURL(PLAY_STORE_URL) }
             ],
-            { cancelable: false } // Kullanıcı bu uyarıyı kapatamaz
+            { cancelable: false }
           );
         }
       } catch (error) {
-        console.log("Versiyon kontrolü yapılamadı (İnternet olmayabilir).");
+        console.log("Versiyon kontrolü yapılamadı.");
       }
     };
     checkForUpdates();
@@ -114,6 +115,8 @@ export default function MirasApp() {
     setInputs(prev => {
       const current = prev[key] || 0;
       let newValue = Math.max(0, current + delta);
+      
+      // Eşler için kısıtlama
       if (key === 'koca') {
         if (delta > 0 && (prev['kari'] || 0) > 0) return prev;
         newValue = Math.min(newValue, 1);
@@ -122,6 +125,11 @@ export default function MirasApp() {
         if (delta > 0 && (prev['koca'] || 0) > 0) return prev;
         newValue = Math.min(newValue, 4);
       }
+      // Anne ve Baba için kısıtlama (Max 1)
+      else if (key === 'anne' || key === 'baba') {
+        newValue = Math.min(newValue, 1);
+      }
+      
       return { ...prev, [key]: newValue };
     });
   };
@@ -137,19 +145,23 @@ export default function MirasApp() {
     motor.yukle(inputs); 
     setResult(motor.hesapla());
 
-   if (adLoaded) interstitial.show();
-    else { setModalVisible(true); interstitial.load(); }
-   
+    // 10 hesaplamada bir reklam gösterimi
+    const nextCount = calcCount + 1;
+    setCalcCount(nextCount);
+
+    if (nextCount % 10 === 0 && adLoaded) {
+      interstitial.show();
+    } else {
+      setModalVisible(true);
+      if (nextCount % 10 === 0 && !adLoaded) interstitial.load(); 
+    }
   };
 
   const handleCloseModal = async () => {
-    setModalVisible(false); // Önce sonucu kapat
-    
-    // Sonuç kapatıldıktan sonra Puanlama Modalı/Uyarı kontrolü yap
+    setModalVisible(false);
     try {
       const hasRated = await AsyncStorage.getItem('hasRatedApp');
       if (hasRated !== 'true') {
-        // Modal kapandıktan hemen sonra uyarı çıkmasın diye ufak bir gecikme ekliyoruz
         setTimeout(() => {
           Alert.alert(
             "Bizi Değerlendirin ⭐",
@@ -159,13 +171,13 @@ export default function MirasApp() {
               { 
                 text: "Puan Ver", 
                 onPress: async () => {
-                  await AsyncStorage.setItem('hasRatedApp', 'true'); // Bir daha sorma
+                  await AsyncStorage.setItem('hasRatedApp', 'true');
                   Linking.openURL(PLAY_STORE_URL);
                 } 
               }
             ]
           );
-        }, 1000); // 1 saniye sonra sor
+        }, 1000);
       }
     } catch (e) {
       console.log("Puanlama durumu okunamadı.");
@@ -288,14 +300,12 @@ export default function MirasApp() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
                 <Text style={styles.modalHeaderTitle}>Miras Paylaşım Sonucu</Text>
-                {/* MODAL KAPATMA BUTONUNA PUANLAMA TETİKLEYİCİSİ EKLENDİ */}
                 <TouchableOpacity onPress={handleCloseModal}>
                     <Ionicons name="close" size={26} color={COLORS.subtext} />
                 </TouchableOpacity>
             </View>
             
             <ScrollView contentContainerStyle={styles.modalScroll}>
-                
                 {result && (
                   <View style={styles.asilMeseleBox}>
                     <Text style={styles.asilMeseleText}>
@@ -329,6 +339,7 @@ export default function MirasApp() {
 
                     return (
                       <React.Fragment key={key}>
+                        {/* Grup Ana Satırı */}
                         <View style={styles.tableRow}>
                           <Text style={[styles.tableCell, { flex: 2.2, color: COLORS.primary }]}>{getLabel(key)}</Text>
                           <Text style={[styles.tableCell, { flex: 0.7, textAlign: 'center' }]}>{adet}</Text>
@@ -336,28 +347,31 @@ export default function MirasApp() {
                           <Text style={[styles.tableCell, {textAlign:'right', flex: 1}]}>%{(yuzdelik * 100).toFixed(1)}</Text>
                         </View>
                         
+                        {/* Grup Toplam Miktarı */}
                         {isValidWealth && (
                             <View style={[styles.tableRow, { borderBottomWidth: 0, paddingVertical: 4, backgroundColor: 'rgba(45, 212, 191, 0.05)' }]}>
-                                <Text style={[styles.tableCell, { flex: 2.2, color: COLORS.primary, fontStyle: 'italic' }]}>  💰 Grup Toplamı</Text>
+                                <Text style={[styles.tableCell, { flex: 2.2, color: COLORS.primary, fontStyle: 'italic' }]}>  Grup Toplamı</Text>
                                 <Text style={[styles.tableCell, { flex: 0.7 }]}></Text>
                                 <Text style={[styles.tableCell, { flex: 2.5, textAlign: 'right', color: COLORS.primary, fontWeight: 'bold' }]}>{formatMoney(grupMoney)}</Text>
                             </View>
                         )}
 
+                        {/* Kişi Başı Düşen Oran (Daha Belirgin) */}
                         {adet > 1 && (
-                          <View style={[styles.tableRow, { borderBottomWidth: 0, paddingVertical: 4, backgroundColor: COLORS.card_dark }]}>
-                            <Text style={[styles.tableCell, styles.bireyselCell, { flex: 2.2 }]}>  ↳ 1 Kişi Payı</Text>
-                            <Text style={[styles.tableCell, styles.bireyselCell, { flex: 0.7, textAlign: 'center' }]}>1</Text>
-                            <Text style={[styles.tableCell, styles.bireyselCell, { flex: 1.5, textAlign: 'right' }]}>{`${(bireyselPay.n * ortakPayda) / bireyselPay.d}/${ortakPayda}`}</Text>
-                            <Text style={[styles.tableCell, styles.bireyselCell, {textAlign:'right', flex: 1}]}>%{(bireyselPay.n / bireyselPay.d * 100).toFixed(1)}</Text>
+                          <View style={[styles.tableRow, { borderBottomWidth: 0, paddingVertical: 6, backgroundColor: COLORS.card_dark }]}>
+                            <Text style={[styles.tableCell, { flex: 2.2, color: COLORS.gold, fontSize: 13, fontWeight: 'bold' }]}>  ↳ 1 Kişi Payı</Text>
+                            <Text style={[styles.tableCell, { flex: 0.7, textAlign: 'center', color: COLORS.text, fontSize: 13 }]}>1</Text>
+                            <Text style={[styles.tableCell, { flex: 1.5, textAlign: 'right', color: COLORS.text, fontSize: 13, fontWeight: 'bold' }]}>{`${(bireyselPay.n * ortakPayda) / bireyselPay.d}/${ortakPayda}`}</Text>
+                            <Text style={[styles.tableCell, {textAlign:'right', flex: 1, color: COLORS.text, fontSize: 13, fontWeight: 'bold' }]}>%{(bireyselPay.n / bireyselPay.d * 100).toFixed(1)}</Text>
                           </View>
                         )}
 
+                        {/* Kişi Başı Düşen Miktar (Çok Daha Belirgin ve Büyük) */}
                         {isValidWealth && adet > 1 && (
-                            <View style={[styles.tableRow, { borderBottomWidth: 0, paddingVertical: 4, backgroundColor: 'rgba(45, 212, 191, 0.05)' }]}>
-                                <Text style={[styles.tableCell, { flex: 2.2, color: COLORS.primary, fontStyle: 'italic' }]}>  💰 1 Kişi Düşen</Text>
+                            <View style={[styles.tableRow, { borderBottomWidth: 0, paddingVertical: 8, backgroundColor: 'rgba(16, 185, 129, 0.15)' }]}>
+                                <Text style={[styles.tableCell, { flex: 2.2, color: COLORS.highlight, fontWeight: 'bold', fontSize: 14 }]}>  💰 1 Kişiye Düşen</Text>
                                 <Text style={[styles.tableCell, { flex: 0.7 }]}></Text>
-                                <Text style={[styles.tableCell, { flex: 2.5, textAlign: 'right', color: COLORS.primary, fontWeight: 'bold' }]}>{formatMoney(individualMoney)}</Text>
+                                <Text style={[styles.tableCell, { flex: 2.5, textAlign: 'right', color: COLORS.highlight, fontSize: 16, fontWeight: '900' }]}>{formatMoney(individualMoney)}</Text>
                             </View>
                         )}
                       </React.Fragment>
@@ -421,7 +435,6 @@ const styles = StyleSheet.create({
   tableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 0.5, borderBottomColor: COLORS.border },
   tableHead: { fontWeight: '700', color: COLORS.subtext, fontSize: 13 },
   tableCell: { fontSize: 13, color: COLORS.text },
-  bireyselCell: { fontSize: 11, color: COLORS.subtext, fontStyle: 'italic' },
   logsContainer: { marginTop: 30, padding: 15, backgroundColor: COLORS.card_dark, borderRadius: 10 },
   logsTitle: { color: COLORS.primary, fontSize: 16, fontWeight: 'bold', marginBottom: 10 },
   logText: { color: COLORS.subtext, marginBottom: 8, lineHeight: 20, fontSize: 13 },
